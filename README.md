@@ -1,5 +1,9 @@
 # Bilingual Tutor — Cloud Profile
 
+> 🎓 **Try it free:** **https://mytt.q29.app** — no signup; bring your own free
+> [Gemini API key](https://aistudio.google.com/apikey) (stored only in your
+> browser). Works on mobile.
+
 A stateless, browser-local Vietnamese ⇄ English speaking & chat tutor. The
 **cloud profile** uses Google Gemini Live for STT + LLM + TTS server-side, so
 the only things you run are a LiveKit SFU, a LiveKit agent worker, and a token
