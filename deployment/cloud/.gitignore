@@ -1,0 +1,2 @@
+# Local secrets — never commit. Copy .env.example → .env and fill in.
+.env

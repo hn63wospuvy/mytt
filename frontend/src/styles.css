@@ -1,0 +1,475 @@
+/* Design tokens — Nunito Sans, rounded ~16px, blue/green/orange, airy. */
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap");
+
+:root {
+  --blue: #2563eb;
+  --blue-bg: #eff4ff;
+  --green: #16a34a;
+  --green-bg: #effaf2;
+  --orange: #ea580c;
+  --orange-bg: #fff4ec;
+
+  --ink: #1e293b;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --bg: #f7f9fc;
+  --panel: #ffffff;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---- generic controls ---- */
+.btn {
+  font: inherit;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  padding: 11px 18px;
+  cursor: pointer;
+  transition: filter 0.15s, opacity 0.15s;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+}
+.btn-danger {
+  background: var(--orange);
+  color: #fff;
+}
+.btn-ghost {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.btn-mic {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.btn-mic.on {
+  background: var(--green-bg);
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+.input:focus {
+  outline: 2px solid var(--blue);
+  border-color: var(--blue);
+}
+.input.required {
+  border-color: var(--orange);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+/* ---- login gate ---- */
+.login-gate {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+.login-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+.login-sub {
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+.login-btn-slot {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+.login-error {
+  color: var(--orange);
+  font-weight: 700;
+  margin: 16px 0 0;
+}
+
+/* ---- app shell ---- */
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+.topbar-greeting {
+  color: var(--muted);
+  font-weight: 700;
+}
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.panes {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+  padding: 16px 20px;
+}
+.panes.collapsed {
+  grid-template-columns: 1fr;
+}
+
+.pane-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+/* ---- config pane ---- */
+.config-pane {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+}
+.config-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.field-row {
+  display: flex;
+  gap: 10px;
+}
+.field-row .input {
+  flex: 1;
+}
+.field-hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 2px 0 0;
+}
+.field-hint a {
+  color: var(--blue);
+  text-decoration: underline;
+}
+.thinking-input {
+  max-width: 120px;
+}
+.config-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.config-status {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  min-height: 20px;
+}
+.config-status.err {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+/* ---- badges ---- */
+.badge {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  background: #f1f5f9;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.badge-cloud {
+  background: var(--blue-bg);
+  color: var(--blue);
+}
+.badge-local {
+  background: var(--orange-bg);
+  color: var(--orange);
+}
+.badge-voice {
+  background: var(--green-bg);
+  color: var(--green);
+}
+.badge-chat {
+  background: var(--blue-bg);
+  color: var(--blue);
+}
+
+/* ---- tooltip ---- */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+.tooltip-bubble {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  z-index: 20;
+  width: max-content;
+  max-width: 260px;
+  padding: 8px 11px;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s;
+  pointer-events: none;
+}
+.tooltip:hover .tooltip-bubble,
+.tooltip:focus-within .tooltip-bubble {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ---- session pane ---- */
+.session-pane {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.transcript {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+}
+.transcript-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+.bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bubble-who {
+  font-size: 12px;
+  font-weight: 800;
+  opacity: 0.7;
+}
+.bubble-user {
+  align-self: flex-end;
+  background: #f1f5f9;
+}
+.bubble-tutor {
+  align-self: flex-start;
+}
+.bubble-tutor.bubble-vi {
+  background: var(--blue-bg);
+}
+.bubble-tutor.bubble-en {
+  background: var(--green-bg);
+}
+
+/* ---- composer (docked bottom) ---- */
+.composer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.composer-input {
+  flex: 1;
+  min-width: 0; /* let the input shrink inside the flex row on narrow screens */
+}
+
+/* ============================================================
+   Responsive — the base styles above are desktop-first; these
+   adapt the layout down to tablet and phone widths.
+   ============================================================ */
+
+/* Tablet / small laptop: tighten the two-column grid. */
+@media (max-width: 960px) {
+  .panes {
+    grid-template-columns: 260px 1fr;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+  .config-pane,
+  .session-pane {
+    padding: 16px;
+  }
+}
+
+/* Phone / portrait: drop to a single column. The config pane stacks above
+   the session and the whole panes area scrolls as one page. The ☰ toggle
+   in the TopBar hides the config to give the chat the full screen. */
+@media (max-width: 768px) {
+  /* Topbar wraps; the actions take their own full-width row with big taps. */
+  .topbar {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 10px 14px;
+  }
+  .topbar-title {
+    font-size: 18px;
+  }
+  .topbar-actions {
+    width: 100%;
+    margin-left: 0;
+    gap: 8px;
+  }
+  .topbar-actions .btn {
+    flex: 1; /* split the row evenly */
+    font-size: 14px;
+    padding: 11px 12px;
+  }
+
+  /* Stack the panes vertically and let the column scroll. */
+  .panes,
+  .panes.collapsed {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .config-pane {
+    overflow: visible; /* natural height — the .panes column scrolls instead */
+  }
+
+  /* The session needs a usable minimum height so the transcript + composer
+     stay tappable even while the config pane is also on screen. */
+  .session-pane {
+    min-height: 65vh;
+  }
+  /* When the config is hidden (collapsed), the session fills the viewport and
+     the transcript scrolls internally again. */
+  .panes.collapsed .session-pane {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .bubble {
+    max-width: 88%;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  /* Keep tooltip bubbles inside the viewport. */
+  .tooltip-bubble {
+    max-width: calc(100vw - 32px);
+  }
+}
+
+/* Very narrow phones (≤ 400px): reclaim the topbar row and ensure ≥44px taps. */
+@media (max-width: 400px) {
+  .topbar-greeting {
+    display: none;
+  }
+  .btn {
+    padding: 12px 14px;
+  }
+  .composer {
+    gap: 8px;
+  }
+  .composer .btn {
+    padding: 12px 12px;
+  }
+}

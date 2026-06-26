@@ -1,0 +1,73 @@
+# CLOUD-profile deployment: Gemini Live does STT+LLM+TTS server-side, so the
+# only things that run here are the LiveKit SFU, the agent worker and the token
+# server (which also serves the web client). Stateless: no login, no database —
+# each user enters a name + their own Gemini key in the browser (localStorage),
+# and the key is forwarded to the agent per connect in the room metadata.
+#
+#   cp .env.example .env   # change LIVEKIT_API_SECRET (and PUBLIC_LIVEKIT_URL)
+#   docker compose up --build -d
+#   open http://localhost:8080
+name: tutor-cloud
+
+services:
+  # --- LiveKit SFU (WebRTC transport) ---------------------------------------
+  livekit:
+    image: livekit/livekit-server:v1.13.1  # pin; must be recent enough to honor token-embedded
+                                           # agent dispatch (RoomConfiguration.agents) from the
+                                           # livekit-agents 1.6.x SDK — v1.8.0 silently dropped it.
+    restart: unless-stopped
+    command: ["--config", "/etc/livekit/livekit.yaml"]
+    environment:
+      # key: secret — must match what the agent and token server sign/verify.
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+    volumes:
+      - ./livekit.yaml:/etc/livekit/livekit.yaml:ro
+    ports:
+      - "7880:7880"        # signaling (HTTP/WS) — the browser connects here
+      - "7881:7881"        # media over TCP (fallback)
+      - "7882:7882/udp"    # media over UDP (primary)
+
+  # --- LiveKit agent worker (the tutor) -------------------------------------
+  agent:
+    build:
+      context: ../..
+      dockerfile: deployment/cloud/Dockerfile
+    image: tutor-backend:cloud         # built once, reused by the token server
+    restart: unless-stopped
+    command: ["python", "-m", "tutor_agent.agent", "start"]
+    depends_on:
+      - livekit
+    environment:
+      PROFILE: cloud
+      LIVEKIT_URL: ws://livekit:7880   # INTERNAL: worker → SFU over the compose net
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+      GEMINI_LIVE_MODEL: ${GEMINI_LIVE_MODEL:-}
+      GEMINI_LANGUAGE: ${GEMINI_LANGUAGE:-}
+      GEMINI_THINKING_BUDGET: ${GEMINI_THINKING_BUDGET:-0}
+      LEVEL: ${LEVEL:-B1}
+
+  # --- Token server (mints LiveKit JWTs + serves the web client on :8080) ---
+  token:
+    image: tutor-backend:cloud
+    build:
+      context: ../..
+      dockerfile: deployment/cloud/Dockerfile
+    restart: unless-stopped
+    command: ["python", "-m", "tutor_agent.token_server.server"]
+    depends_on:
+      - livekit
+    environment:
+      # PUBLIC url returned to the browser — must be reachable FROM THE CLIENT,
+      # not the docker-internal name. Local test: ws://localhost:7880.
+      # Production: wss://livekit.your-domain.tld (TLS-terminated at a proxy).
+      LIVEKIT_URL: ${PUBLIC_LIVEKIT_URL:-ws://localhost:7880}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/healthz')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

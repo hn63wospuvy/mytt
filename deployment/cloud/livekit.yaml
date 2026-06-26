@@ -1,0 +1,22 @@
+# LiveKit SFU config for a single-host self-hosted deploy (cloud profile).
+# Secrets are NOT here — the API key/secret come from the LIVEKIT_KEYS env var
+# set in docker-compose.yml (sourced from .env), so this file is safe to commit.
+
+port: 7880              # signaling: HTTP + WebSocket
+rtc:
+  tcp_port: 7881        # media over TCP (fallback when UDP is blocked)
+  udp_port: 7882        # media over a single UDP port (easy to publish in Docker)
+  # Auto-detect the host's public IP via STUN so the ICE candidates handed to
+  # the browser are reachable. On a cloud VM with a public IP this "just works".
+  # For a purely-local Linux test you may flip this to false; on macOS Docker the
+  # container IP isn't host-reachable — test the cloud profile against the dev
+  # `livekit-server --dev` instead (see README "macOS / local" note).
+  use_external_ip: true
+
+logging:
+  level: info
+
+room:
+  # Keep short so a fresh join re-dispatches the agent. Mirrors
+  # token_server.ROOM_EMPTY_TIMEOUT_SECONDS.
+  empty_timeout: 30

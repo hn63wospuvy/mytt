@@ -1,0 +1,25 @@
+# --- secrets / local config (NEVER commit) ---
+.env
+*.env
+!*.env.example
+cred.txt
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+dist/
+build/
+*.db
+
+# --- Node / frontend ---
+node_modules/
+frontend/dist/
+
+# --- editor / OS ---
+.vscode/
+.idea/
+.DS_Store

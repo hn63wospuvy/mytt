@@ -1,0 +1,17 @@
+# BuildKit reads this per-Dockerfile ignore (patterns are relative to the build
+# context = repo root). We need backend/ (runtime) and frontend/ (the node build
+# stage builds dist itself), so exclude everything else plus the
+# heavy/transient bits inside both.
+*
+!backend/
+!frontend/
+
+backend/.venv/
+backend/.pytest_cache/
+backend/*.db
+# The image builds frontend/dist in the node stage — never ship a host build,
+# and never copy the huge node_modules into the build context.
+frontend/node_modules/
+frontend/dist/
+**/__pycache__/
+**/*.pyc

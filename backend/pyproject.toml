@@ -1,0 +1,56 @@
+[project]
+name = "tutor-agent"
+version = "0.1.0"
+description = "Trợ lý tiếng Anh AI — Phase-1 LOCAL backend (LiveKit agent + models)"
+requires-python = ">=3.11"
+# Core has ZERO third-party deps: all pure-logic modules (config, bilingual,
+# storage, search factory/grounding, extract) import only the stdlib, so the
+# unit suite runs with no network and no model downloads (design §"Errors & testing").
+dependencies = []
+
+[project.optional-dependencies]
+# The live voice loop. Pulls the framework that provides VAD / endpointing /
+# turn-detection / barge-in / streaming TTS (spec §6).
+livekit = [
+    "livekit-agents>=1.0",
+    "livekit-plugins-silero>=1.0",
+    "livekit-plugins-openai>=1.0",
+    "livekit-plugins-turn-detector>=1.0",
+    "livekit-api>=1.0",
+]
+# HTTP adapters (STT/TTS streaming, web search backends).
+http = [
+    "httpx>=0.27",
+]
+# CLOUD profile (Phase 3): Gemini Live realtime (STT+LLM+TTS + grounding).
+cloud = [
+    "livekit-plugins-google>=1.0",
+    "google-auth>=2.0",
+    "cryptography>=42.0",
+]
+# Heavy local model runtimes — only on the Mac that actually serves models.
+# Never required for tests; absent → agent runs with mock adapters.
+models = [
+    "mlx-lm>=0.20",
+    # Dev substitute STT server (local_servers/stt_server.py) — real Whisper on
+    # Apple Silicon, stands in for the Nemotron model server.
+    "mlx-whisper>=0.4",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "cryptography>=42.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tutor_agent"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+# "." for the dev-only local_servers/ substitute STT/TTS package; "src" for the agent.
+pythonpath = ["src", "."]
